@@ -42,13 +42,13 @@
 
     {% if loop.index is divisibleby 2 and not loop.last %}
     <div style="text-align:right; font-size:10px; font-family:Arial;">
-        Printed by: {{ printed_by }}
+        {{ printed_by }}
     </div>
     <div class="page-break"></div>
     {% endif %}
     {% endfor %}
     <div style="text-align:right; font-size:10px; font-family:Arial;">
-        Printed by: {{ printed_by }}
+        {{ printed_by }}
     </div>
     <div class="page-break"></div>
     <h3>Warning and Errors</h3>
@@ -67,7 +67,7 @@
         {% endfor %}
     </table>
     <div style="text-align:right; font-size:10px; font-family:Arial;">
-        Printed by: {{ printed_by }}
+        {{ printed_by }}
     </div>
     <div class="page-break"></div>
     <h3>Events</h3>
@@ -86,7 +86,7 @@
         {% endfor %}
     </table>
     <div style="text-align:right; font-size:10px; font-family:Arial;">
-        Printed by: {{ printed_by }}
+        {{ printed_by }}
     </div>
     <div class="page-break"></div>
 
@@ -112,7 +112,7 @@
         </tr>
     </table>
     <div style="text-align:right; font-size:10px; font-family:Arial;">
-        Printed by: {{ printed_by }}
+        {{ printed_by }}
     </div>
 </body>
 
