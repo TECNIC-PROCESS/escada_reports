@@ -11,6 +11,7 @@ import base64
 from datetime import timedelta
 from datetime import datetime
 
+wkhtml_path = os.path.abspath("wkhtmltopdf_portable/bin/wkhtmltopdf.exe")
 
 def get_data_from_mysql(host, user, password, database, query):
     conn = mysql.connector.connect(
