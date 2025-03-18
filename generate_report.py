@@ -183,8 +183,8 @@ if __name__ == "__main__":
     # os.makedirs('output', exist_ok=True)
     # Datos desde MySQL
 
-    host = "192.168.1.118"
-    user = "tecnic"
+    host = "localhost"
+    user = "root"
     password = "tecnic"
     database = "tecnic"
 
