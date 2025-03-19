@@ -167,9 +167,9 @@ def generate_pdf(data_dict, output_pdf):
     try:
         config = pdfkit.configuration(wkhtmltopdf=wkhtml_path)
         pdfkit.from_string(html_out, output_pdf, options=options, configuration=config)
-        print(f"✅ PDF generado: {output_pdf}")
+        print(f"PDF generated: {output_pdf}")
     except Exception as e:
-        print(f"❌ Error al generar PDF: {e}")
+        print(f"Error generating PDF: {e}")
     finally:
         # Eliminar archivos temporales
         os.remove(temp_header_path)
