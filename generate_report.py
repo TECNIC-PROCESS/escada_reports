@@ -165,7 +165,7 @@ def generate_pdf(data_dict, output_pdf):
     }
 
     try:
-        config = pdfkit.configuration()
+        config = pdfkit.configuration(wkhtmltopdf=wkhtml_path)
         pdfkit.from_string(html_out, output_pdf, options=options, configuration=config)
         print(f"✅ PDF generado: {output_pdf}")
     except Exception as e:
@@ -178,7 +178,7 @@ def generate_pdf(data_dict, output_pdf):
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
-        print("Usage: python generate_report.py <batch_id> <output_path>")
+        print("Usage: python generate_report.py <batch_id> <output_path> <print_user> <product_name>")
         sys.exit(1)
 
     # os.makedirs('output', exist_ok=True)

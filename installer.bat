@@ -24,14 +24,9 @@ echo ========================================
 echo Instalando dependencias Python...
 echo ========================================
 python -m pip install --upgrade pip
-
-IF EXIST requirements.txt (
-    python -m pip install -r requirements.txt
-) ELSE (
-    echo ERROR: requirements.txt no encontrado.
-    pause
-    exit /b
-)
+python -m pip install -r requirements.txt
+pip install --upgrade pip
+pip install -r requirements.txt
 
 echo ========================================
 echo wkhtmltopdf portable listo para usar.
