@@ -41,7 +41,7 @@ def get_data_from_mysql(host, user, password, database, query):
             sys.exit()
         return []
     with open(log_path, 'a', encoding='utf-8') as log_file:
-        log_file.write('Consulta SQL ejecutada correctamente.\n')
+        log_file.write('%s : %s \n ' % ('Consulta SQL ejecutada correctamente.', str(query)))
         return data_dicts
 
 
