@@ -37,7 +37,7 @@ def get_data_from_mysql(host, user, password, database, query):
             log_file.write('%s: %s' % (datetime.now().strftime(
                 '%d/%m/%Y %H:%M:%S'), 'ERROR en conexión SQL o consulta:\n'))
             log_file.write(traceback.format_exc() + '\n ')
-            log_file.write(str(e) + '\n ')
+            log_file.write(str(query) + '\n ')
             sys.exit()
         return []
     with open(log_path, 'a', encoding='utf-8') as log_file:
@@ -206,8 +206,8 @@ if __name__ == "__main__":
 
     log_path = os.path.join(os.getcwd(), 'execution_log.txt')
     with open(log_path, 'a', encoding='utf-8') as log_file:
-        log_file.write('%s: %s' % (datetime.now().strftime(
-            '%d/%m/%Y %H:%M:%S'), '--- INICIO del proceso ---\n'))
+        log_file.write('%s: %s -- %s' % (datetime.now().strftime(
+            '%d/%m/%Y %H:%M:%S'), '--- INICIO del proceso ---\n', str(sys.argv)))
 
     if len(sys.argv) != 5:
         log_file.write('%s: %s' % (datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
@@ -358,12 +358,15 @@ if __name__ == "__main__":
         end_user = data[0]['Ev_User']
 
     # Get warnings
-    warning_datas = get_data_from_mysql(
-        host,
-        user,
-        password,
-        database,
-        query="SELECT * FROM tecnic.alarmhistory WHERE Al_Start_Time>='%s' and Al_Start_Time<='%s';" % (start_date, end_date))
+    if not start_date or not end_date:
+        warning_datas = []
+    else:
+        warning_datas = get_data_from_mysql(
+            host,
+            user,
+            password,
+            database,
+            query="SELECT * FROM tecnic.alarmhistory WHERE Al_Start_Time>='%s' and Al_Start_Time<='%s';" % (start_date, end_date))
 
     warnings = []
     for warning_data in warning_datas:
