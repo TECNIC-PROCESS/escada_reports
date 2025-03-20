@@ -5,6 +5,8 @@ import tempfile
 import mysql.connector
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
+import os
+import traceback
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import base64
@@ -13,21 +15,34 @@ from datetime import datetime
 
 wkhtml_path = os.path.abspath("wkhtmltopdf_portable/bin/wkhtmltopdf.exe")
 
+
 def get_data_from_mysql(host, user, password, database, query):
-    conn = mysql.connector.connect(
-        host=host,
-        user=user,
-        password=password,
-        database=database)
-    cursor = conn.cursor()
-    cursor.execute(query)
-    columns = [col[0] for col in cursor.description]
-    data = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    # Convertir a lista de diccionarios
-    data_dicts = [dict(zip(columns, row)) for row in data]
-    return data_dicts
+    log_path = os.path.join(os.getcwd(), 'execution_log.txt')
+    try:
+        conn = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database)
+        cursor = conn.cursor()
+        cursor.execute(query)
+        columns = [col[0] for col in cursor.description]
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        # Convertir a lista de diccionarios
+        data_dicts = [dict(zip(columns, row)) for row in data]
+    except Exception as e:
+        with open(log_path, 'a', encoding='utf-8') as log_file:
+            log_file.write('%s: %s' % (datetime.now().strftime(
+                '%d/%m/%Y %H:%M:%S'), 'ERROR en conexión SQL o consulta:\n'))
+            log_file.write(traceback.format_exc() + '\n ')
+            log_file.write(str(e) + '\n ')
+            sys.exit()
+        return []
+    with open(log_path, 'a', encoding='utf-8') as log_file:
+        log_file.write('Consulta SQL ejecutada correctamente.\n')
+        return data_dicts
 
 
 def blob_to_base64_image(blob_data):
@@ -121,6 +136,8 @@ def generate_multiline_chart(data_dict, chart):
     # Convertir a base64
     buf = io.BytesIO()
     plt.savefig(buf, format='png', bbox_inches='tight')
+    with open(log_path, 'a', encoding='utf-8') as log_file:
+        log_file.write('Gráfico guardado correctamente.\n')
     plt.close()
     buf.seek(0)
     img_base64 = base64.b64encode(buf.read()).decode('utf-8')
@@ -166,8 +183,17 @@ def generate_pdf(data_dict, output_pdf):
 
     try:
         config = pdfkit.configuration(wkhtmltopdf=wkhtml_path)
-        pdfkit.from_string(html_out, output_pdf, options=options, configuration=config)
-        print(f"PDF generated: {output_pdf}")
+        try:
+            pdfkit.from_string(html_out, output_pdf,
+                               options=options, configuration=config)
+            with open(log_path, 'a', encoding='utf-8') as log_file:
+                log_file.write(
+                    'PDF generado correctamente: ' + output_pdf + '\n')
+        except Exception as e:
+            with open(log_path, 'a', encoding='utf-8') as log_file:
+                log_file.write('ERROR al generar PDF:\n')
+                log_file.write(traceback.format_exc() + '\n')
+            print(f"PDF generated: {output_pdf}")
     except Exception as e:
         print(f"Error generating PDF: {e}")
     finally:
@@ -177,8 +203,15 @@ def generate_pdf(data_dict, output_pdf):
 
 
 if __name__ == "__main__":
+
+    log_path = os.path.join(os.getcwd(), 'execution_log.txt')
+    with open(log_path, 'a', encoding='utf-8') as log_file:
+        log_file.write('%s: %s' % (datetime.now().strftime(
+            '%d/%m/%Y %H:%M:%S'), '--- INICIO del proceso ---\n'))
+
     if len(sys.argv) != 5:
-        print("Usage: python generate_report.py <batch_id> <output_path> <print_user> <product_name>")
+        log_file.write('%s: %s' % (datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
+                                   "Usage: python generate_report.py <batch_id> <output_path> <print_user> <product_name>"))
         sys.exit(1)
 
     # os.makedirs('output', exist_ok=True)
@@ -295,9 +328,6 @@ if __name__ == "__main__":
             (process_data['Timestamp'], process_data['Pump11_PV']))
         chart4_data['Induction'].append(
             (process_data['Timestamp'], process_data['Pump12_PV']))
-        # chart4_data['Derepression'].append((process_data['Timestamp'], process_data['Derepression_PV']))
-        # chart4_data['Induction'].append((process_data['Timestamp'], process_data['Induction_PV']))
-        # raise Exception(process_data)
 
     chart_base64 = generate_multiline_chart(chart1_data, 1)
     chart2_base64 = generate_multiline_chart(chart2_data, 2)
@@ -348,7 +378,7 @@ if __name__ == "__main__":
         user,
         password,
         database,
-        query="SELECT * FROM tecnic.eventhistory WHERE Ev_time>='%s' and Ev_time<='%s';" % (start_date, end_date))  
+        query="SELECT * FROM tecnic.eventhistory WHERE Ev_time>='%s' and Ev_time<='%s';" % (start_date, end_date))
     events = []
     for event_data in event_datas:
         events.append({
@@ -356,7 +386,7 @@ if __name__ == "__main__":
             'user': event_data['Ev_User'],
             'message': event_data['Ev_Message']
         })
-        
+
     data_dict = {
         'bioreactor_name': product_name,
         'batch_type': batch_type,
