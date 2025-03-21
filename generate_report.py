@@ -382,12 +382,20 @@ if __name__ == "__main__":
             database,
             query="SELECT * FROM tecnic.eventhistory WHERE Ev_time>='%s' and Ev_time<='%s';" % (start_date, end_date))
     events = []
+    last_user = 'Unknown'
     for event_data in event_datas:
         events.append({
             'date': event_data['Ev_Time'],
-            'user': event_data['Ev_User'],
+            'user': event_data['Ev_User'] if event_data['Ev_User'] != 'Guest' else last_user,
             'message': event_data['Ev_Message']
         })
+        if event_data['Ev_User'] != 'Guest':
+            last_user = event_data['Ev_User']
+    if end_user == 'Guest':
+        for event_date in reversed(event_datas):
+            if event_date['Ev_User'] != 'Guest':
+                end_user = event_date['Ev_User']
+                break
 
     data_dict = {
         'bioreactor_name': product_name,
