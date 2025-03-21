@@ -206,9 +206,9 @@ def generate_pdf(data_dict, output_pdf):
 if __name__ == "__main__":
 
     log_path = os.path.join(os.getcwd(), 'execution_log.txt')
-    with open(log_path, 'a', encoding='utf-8') as log_file:
-        log_file.write('%s: %s -- %s' % (datetime.now().strftime(
-            '%d/%m/%Y %H:%M:%S'), '--- INICIO del proceso ---\n', str(sys.argv)))
+    with open(log_path, 'w', encoding='utf-8') as log_file:
+        log_file.write('%s: %s -- %s \n' % (datetime.now().strftime(
+            '%d/%m/%Y %H:%M:%S'), '--- INICIO del proceso ---', str(sys.argv)))
 
     if len(sys.argv) != 5:
         log_file.write('%s: %s' % (datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
