@@ -335,35 +335,35 @@ if __name__ == "__main__":
     if start_date:
         event_start_date = start_date - timedelta(seconds=30)
         event_end_date = start_date + timedelta(seconds=30)
-        data = get_data_from_mysql(
+        event_datas = get_data_from_mysql(
             host,
             user,
             password,
             database,
             query="SELECT Ev_user FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s';" % (event_start_date, event_end_date))
-        if not data:
+        if not event_datas:
             start_user = ''
         else:
-            for event_data in data:
-                if event_data['Ev_User'] != 'Guest':
+            for event_data in event_datas:
+                if event_data['Ev_user'] != 'Guest':
                     start_user = event_data['Ev_User']
                     break
     end_user = False
     if end_date:
         event_start_date = end_date - timedelta(seconds=30)
         event_end_date = end_date + timedelta(seconds=30)
-        data = get_data_from_mysql(
+        event_datas = get_data_from_mysql(
             host,
             user,
             password,
             database,
-            query="SELECT Ev_User FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s';" % (event_start_date, event_end_date))
-        if not data:
+            query="SELECT Ev_user FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s';" % (event_start_date, event_end_date))
+        if not event_datas:
             end_user = ''
         else:
-            for event_data in data:
-                if event_data['Ev_User'] != 'Guest':
-                    end_user = event_data['Ev_User']
+            for event_data in event_datas:
+                if event_data['Ev_user'] != 'Guest':
+                    end_user = event_data['Ev_user']
                     break
 
     # Get warnings
