@@ -129,8 +129,7 @@ def generate_multiline_chart(data_dict, chart):
 
     # 🔥 Aquí movemos solo el contenido gráfico (grilla + líneas)
     box = ax1.get_position()
-    ax1.set_position([box.x0, box.y0, box.width, box.height]
-                     )  # ajusta 0.15 a gusto
+    ax1.set_position([box.x0, box.y0, box.width, box.height])
 
     plt.tight_layout()
 
@@ -215,9 +214,7 @@ if __name__ == "__main__":
                                    "Usage: python generate_report.py <batch_id> <output_path> <print_user> <product_name>"))
         sys.exit(1)
 
-    # os.makedirs('output', exist_ok=True)
     # Datos desde MySQL
-
     host = "localhost"
     user = "root"
     password = "tecnic"
@@ -308,7 +305,6 @@ if __name__ == "__main__":
             (process_data['Timestamp'], process_data['STIR_PV']))
         chart2_data['OvrA'].append(
             (process_data['Timestamp'], process_data['STIR_PV']))
-        # chart2_data['OvrA'].append((process_data['Timestamp'], process_data['OvrA_PV']))
         chart2_data['AIR'].append(
             (process_data['Timestamp'], process_data['AIR_PV']))
         chart2_data['O2_PV'].append(
