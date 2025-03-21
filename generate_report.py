@@ -344,7 +344,10 @@ if __name__ == "__main__":
         if not data:
             start_user = ''
         else:
-            start_user = data[-1]['Ev_user']
+            for event_data in data:
+                if event_data['Ev_User'] != 'Guest':
+                    start_user = event_data['Ev_User']
+                    break
     end_user = False
     if end_date:
         event_start_date = end_date - timedelta(seconds=30)
@@ -358,7 +361,10 @@ if __name__ == "__main__":
         if not data:
             end_user = ''
         else:
-            end_user = data[0]['Ev_User']
+            for event_data in data:
+                if event_data['Ev_User'] != 'Guest':
+                    end_user = event_data['Ev_User']
+                    break
 
     # Get warnings
     if not start_date or not end_date:
