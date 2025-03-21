@@ -41,7 +41,8 @@ def get_data_from_mysql(host, user, password, database, query):
             sys.exit()
         return []
     with open(log_path, 'a', encoding='utf-8') as log_file:
-        log_file.write('%s : %s \n ' % ('Consulta SQL ejecutada correctamente.', str(query)))
+        log_file.write('%s : %s \n ' %
+                       ('Consulta SQL ejecutada correctamente.', str(query)))
         return data_dicts
 
 
@@ -343,7 +344,7 @@ if __name__ == "__main__":
             user,
             password,
             database,
-            query="SELECT Ev_user FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s' and Ev_Message='Manual batch started';" % (event_start_date, event_end_date))
+            query="SELECT Ev_user FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s';" % (event_start_date, event_end_date))
         start_user = data[0]['Ev_user']
     end_user = False
     if end_date:
@@ -375,13 +376,15 @@ if __name__ == "__main__":
             'user': warning_data['Al_User'],
             'message': warning_data['Al_Message']
         })
-
-    event_datas = get_data_from_mysql(
-        host,
-        user,
-        password,
-        database,
-        query="SELECT * FROM tecnic.eventhistory WHERE Ev_time>='%s' and Ev_time<='%s';" % (start_date, end_date))
+    if not start_date or not end_date:
+        event_datas = []
+    else:
+        event_datas = get_data_from_mysql(
+            host,
+            user,
+            password,
+            database,
+            query="SELECT * FROM tecnic.eventhistory WHERE Ev_time>='%s' and Ev_time<='%s';" % (start_date, end_date))
     events = []
     for event_data in event_datas:
         events.append({
