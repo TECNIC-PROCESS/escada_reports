@@ -333,26 +333,32 @@ if __name__ == "__main__":
 
     start_user = False
     if start_date:
-        event_start_date = start_date - timedelta(minutes=1)
-        event_end_date = start_date
+        event_start_date = start_date - timedelta(seconds=30)
+        event_end_date = start_date + timedelta(seconds=30)
         data = get_data_from_mysql(
             host,
             user,
             password,
             database,
             query="SELECT Ev_user FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s';" % (event_start_date, event_end_date))
-        start_user = data[0]['Ev_user']
+        if not data:
+            start_user = ''
+        else:
+            start_user = data[-1]['Ev_user']
     end_user = False
     if end_date:
-        event_start_date = end_date - timedelta(minutes=1)
-        event_end_date = end_date
+        event_start_date = end_date - timedelta(seconds=30)
+        event_end_date = end_date + timedelta(seconds=30)
         data = get_data_from_mysql(
             host,
             user,
             password,
             database,
             query="SELECT Ev_User FROM tecnic.eventhistory WHERE Ev_time>='%s' AND Ev_time<='%s';" % (event_start_date, event_end_date))
-        end_user = data[0]['Ev_User']
+        if not data:
+            end_user = ''
+        else:
+            end_user = data[0]['Ev_User']
 
     # Get warnings
     if not start_date or not end_date:
