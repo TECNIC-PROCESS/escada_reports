@@ -346,7 +346,7 @@ if __name__ == "__main__":
         else:
             for event_data in event_datas:
                 if event_data['Ev_user'] != 'Guest':
-                    start_user = event_data['Ev_User']
+                    start_user = event_data['Ev_user']
                     break
     end_user = False
     if end_date:
@@ -408,7 +408,8 @@ if __name__ == "__main__":
             if event_date['Ev_User'] != 'Guest':
                 end_user = event_date['Ev_User']
                 break
-
+    # TODO: Add recipe phase dict. With recipe name and phase name and all values in charts (SET POINTS)
+    recipe_phase = {}
     data_dict = {
         'bioreactor_name': product_name,
         'batch_type': batch_type,
@@ -421,6 +422,7 @@ if __name__ == "__main__":
         'end_user': end_user,
         'end_date': end_date,
         'duration': duration,
+        'recipe_phase': recipe_phase,
         'warnings': warnings,
         'events': events,
         'charts': [chart_base64, chart2_base64, chart3_base64, chart4_base64],
