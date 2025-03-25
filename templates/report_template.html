@@ -17,13 +17,16 @@
         .page-break {
             page-break-before: always;
         }
-
+        
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1cm;
         }
-
+        table span {
+            font-size: 10px;
+            font-weight: normal;
+        }
         thead {
             display: table-header-group !important;
         }
@@ -54,21 +57,22 @@
             <tr>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Name</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2<br/><span>%</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR<br/><span>rpm</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp<br/><span>°C</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR<br/><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2<br/><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2<br/><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA<br/><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM<br/><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA<br/><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID<br/><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE<br/><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression<br/><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction<br/><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition<br/><span>ml/min</span></th>
             </tr>
         </thead>
         <tbody>
@@ -77,20 +81,21 @@
                 <td>{{ row.Phase_number }}</td>
                 <td>{{ row.Phase_name }}</td>
                 <td>{{ row.timestamp }}</td>
-                <td>{{ row.pH_mode }} pH</td>
-                <td>{{ row.pO2_mode }} %sat</td>
-                <td>{{ row.STIR_mode }} rpm</td>
-                <td>{{ row.temp_mode }} °C</td>
-                <td>{{ row.AIR_mode }} l/min</td>
-                <td>{{ row.O2_mode }} l/min</td>
-                <td>{{ row.CO2_mode }} l/min</td>
-                <td>{{ row.FOAM_mode }} ml/min</td>
-                <td>{{ row.MEDIA_mode }} ml/min</td>
-                <td>{{ row.ACID_mode }} ml/min</td>
-                <td>{{ row.BASE_mode }} ml/min</td>
-                <td>{{ row.Depression_mode }} ml/min</td>
-                <td>{{ row.Induction_mode }} ml/min</td>
-                <td>{{ row.Addition_mode }} ml/min</td>
+                <td>{{ row.pH_mode }}</td>
+                <td>{{ row.pO2_mode }}</td>
+                <td>{{ row.STIR_mode }}</td>
+                <td>{{ row.temp_mode }}</td>
+                <td>{{ row.AIR_mode }}</td>
+                <td>{{ row.O2_mode }}</td>
+                <td>{{ row.CO2_mode }}</td>
+                <td>{{ row.OvrA_SP }}</td>
+                <td>{{ row.FOAM_mode }}</td>
+                <td>{{ row.MEDIA_mode }}</td>
+                <td>{{ row.ACID_mode }}</td>
+                <td>{{ row.BASE_mode }}</td>
+                <td>{{ row.Depression_mode }}</td>
+                <td>{{ row.Induction_mode }}</td>
+                <td>{{ row.Addition_mode }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -106,11 +111,11 @@
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Mode</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2<br/><span>%</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR<br/><span>rpm</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp<br/><span>°C</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2<br/><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA<br/><span>ml/min</span></th>
             </tr>
         </thead>
         <tbody>
@@ -118,12 +123,12 @@
             <tr>
                 <td>{{ row.phase_number }}</td>
                 <td>{{ row.mode }}</td>
-                <td>{{ row.ph_sp }} pH</td>
-                <td>{{ row.pO2_sp }} %sat</td>
-                <td>{{ row.stir_sp }} rpm</td>
-                <td>{{ row.temp_sp }} °C</td>
-                <td>{{ row.o2_sp }} l/min</td>
-                <td>{{ row.media_sp }} ml/min</td>
+                <td>{{ row.ph_sp }}</td>
+                <td>{{ row.pO2_sp }}</td>
+                <td>{{ row.stir_sp }}</td>
+                <td>{{ row.temp_sp }}</td>
+                <td>{{ row.o2_sp }}</td>
+                <td>{{ row.media_sp }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -191,28 +196,28 @@
     <div class="page-break"></div>
     {% endif %}
     -->
-    <h3>Phase history</h3>
+    <h3>Batch data</h3>
     <table>
         <thead>
             <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase name</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">WI01</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2<br /><span>%</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR<br /><span>rpm</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp<br /><span>°C</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR<br /><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2<br /><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2<br /><span>l/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA<br /><span></span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition<br /><span>ml/min</span></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">WI01<br /><span>kg</span></th>
             </tr>
         </thead>
         <tbody>
@@ -220,22 +225,22 @@
             <tr>
                 <td>{{ row.timestamp }}</td>
                 <td>{{ row.phase_name }}</td>
-                <td>{{ row.pH_PV }} pH</td>
-                <td>{{ row.pO2_PV }} %sat</td>
-                <td>{{ row.STIR_PV }} rpm</td>
-                <td>{{ row.Temp_PV }} °C</td>
-                <td>{{ row.AIR_PV }} l/min</td>
-                <td>{{ row.O2_PV }} l/min</td>
-                <td>{{ row.CO2_PV }} l/min</td>
-                <td>{{ row.AFOAM_PV }} ml/min</td>
-                <td>{{ row.MEDIA_PV }} ml/min</td>
-                <td>{{ row.ACID_PV }} ml/min</td>
-                <td>{{ row.BASE_PV }} ml/min</td>
-                <td>{{ row.Depression_PV }} ml/min</td>
-                <td>{{ row.Induction_PV }} ml/min</td>
-                <td>{{ row.Addition_PV }} ml/min</td>
-                <td>{{ row.OvrA_PV }} l/min</td>
-                <td>{{ row.WI01_PV }} ml/min</td>
+                <td>{{ row.pH_PV }}</td>
+                <td>{{ row.pO2_PV }}</td>
+                <td>{{ row.STIR_PV }}</td>
+                <td>{{ row.Temp_PV }}</td>
+                <td>{{ row.AIR_PV }}</td>
+                <td>{{ row.O2_PV }}</td>
+                <td>{{ row.CO2_PV }}</td>
+                <td>{{ row.OvrA_PV }}</td>
+                <td>{{ row.AFOAM_PV }}</td>
+                <td>{{ row.MEDIA_PV }}</td>
+                <td>{{ row.ACID_PV }}</td>
+                <td>{{ row.BASE_PV }}</td>
+                <td>{{ row.Depression_PV }}</td>
+                <td>{{ row.Induction_PV }}</td>
+                <td>{{ row.Addition_PV }}</td>
+                <td>{{ row.WI01_PV }}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -264,7 +269,7 @@
     <table>
         <thead>
             <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
             </tr>
@@ -287,7 +292,7 @@
     <table>
         <thead>
             <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
             </tr>

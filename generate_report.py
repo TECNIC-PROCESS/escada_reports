@@ -446,6 +446,7 @@ if __name__ == "__main__":
             'BASE': recipe_start_datas[0]['BASE_PV'] if recipe_start_datas[0]['BASE_PV'] != 0 else 0,
             'AFOAM': recipe_start_datas[0]['AFOAM_PV'] if recipe_start_datas[0]['AFOAM_PV'] != 0 else 0,
             'MEDIA': recipe_start_datas[0]['MEDIA_PV'] if recipe_start_datas[0]['MEDIA_PV'] != 0 else 0,
+            'OvrA_SP': recipe_start_datas[0]['AIROVerlay_SP'] if recipe_start_datas[0]['AIROVerlay_SP'] != 0 else 0,
         }]
 
     recipe_phase_datas = []
@@ -522,6 +523,7 @@ if __name__ == "__main__":
                 'Depression_mode': depression,
                 'Induction_mode': induction,
                 'Addition_mode': addition,
+                'OvrA_SP': ovrA_sp,
             })
     recipe_transition_datas = get_data_from_mysql(
         host,
@@ -563,22 +565,22 @@ if __name__ == "__main__":
         phases_history_data.append({
             'timestamp': phase_history['Timestamp'].strftime('%d/%m/%Y %H:%M:%S'),
             'phase_name': recipe_name,
-            'pH_PV': phase_history['pH_PV'],
-            'pO2_PV': phase_history['pO2_PV'],
-            'Temp_PV': phase_history['Temp_PV'],
-            'STIR_PV': phase_history['STIR_PV'],
-            'OvrA_PV': phase_history['AIROverlay_PV'],
-            'AIR_PV': phase_history['AIR_PV'],
-            'O2_PV': phase_history['O2_PV'],
-            'CO2_PV': phase_history['CO2_PV'],
-            'WI01_PV': phase_history['WI01_PV'],
-            'MEDIA_PV': phase_history['MEDIA_PV'],
-            'ACID_PV': phase_history['ACID_PV'],
-            'BASE_PV': phase_history['BASE_PV'],
-            'AFOAM_PV': phase_history['AFOAM_PV'],
-            'Depression_PV': phase_history['Pump10_PV'],
-            'Induction_PV': phase_history['Pump11_PV'],
-            'Addition_PV': phase_history['Pump12_PV'],
+            'pH_PV': round(phase_history['pH_PV'], 2),
+            'pO2_PV': round(phase_history['pO2_PV'], 2),
+            'Temp_PV': round(phase_history['Temp_PV'], 2),
+            'STIR_PV': round(phase_history['STIR_PV'], 2),
+            'OvrA_PV': round(phase_history['AIROverlay_PV'], 2),
+            'AIR_PV': round(phase_history['AIR_PV'], 2),
+            'O2_PV': round(phase_history['O2_PV'], 2),
+            'CO2_PV': round(phase_history['CO2_PV'], 2),
+            'WI01_PV': round(phase_history['WI01_PV'], 2),
+            'MEDIA_PV': round(phase_history['MEDIA_PV'], 2),
+            'ACID_PV': round(phase_history['ACID_PV'], 2),
+            'BASE_PV': round(phase_history['BASE_PV'], 2),
+            'AFOAM_PV': round(phase_history['AFOAM_PV'], 2),
+            'Depression_PV': round(phase_history['Pump10_PV'], 2),
+            'Induction_PV': round(phase_history['Pump11_PV'], 2),
+            'Addition_PV': round(phase_history['Pump12_PV'], 2),
 
         })
     data_dict = {
