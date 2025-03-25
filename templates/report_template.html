@@ -24,17 +24,226 @@
             margin-top: 1cm;
         }
 
+        thead {
+            display: table-header-group !important;
+        }
+
+        tbody {
+            display: table-row-group !important;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
         th,
         td {
             border: 1px solid black;
             padding: 5px;
             text-align: center;
+            vertical-align: top;
         }
     </style>
 </head>
 
 <body>
+    <h3>Recipe phase set points</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Name</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in recipe_phase %}
+            <tr>
+                <td>{{ row.Phase_number }}</td>
+                <td>{{ row.Phase_name }}</td>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.pH_mode }} pH</td>
+                <td>{{ row.pO2_mode }} %sat</td>
+                <td>{{ row.STIR_mode }} rpm</td>
+                <td>{{ row.temp_mode }} °C</td>
+                <td>{{ row.AIR_mode }} l/min</td>
+                <td>{{ row.O2_mode }} l/min</td>
+                <td>{{ row.CO2_mode }} l/min</td>
+                <td>{{ row.FOAM_mode }} ml/min</td>
+                <td>{{ row.MEDIA_mode }} ml/min</td>
+                <td>{{ row.ACID_mode }} ml/min</td>
+                <td>{{ row.BASE_mode }} ml/min</td>
+                <td>{{ row.Depression_mode }} ml/min</td>
+                <td>{{ row.Induction_mode }} ml/min</td>
+                <td>{{ row.Addition_mode }} ml/min</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align:right; font-size:10px; font-family:Arial;">
+        {{ printed_by }}
+    </div>
+    <div class="page-break"></div>
+    <h3>Recipe phase transition</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Mode</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in recipe_transition %}
+            <tr>
+                <td>{{ row.phase_number }}</td>
+                <td>{{ row.mode }}</td>
+                <td>{{ row.ph_sp }} pH</td>
+                <td>{{ row.pO2_sp }} %sat</td>
+                <td>{{ row.stir_sp }} rpm</td>
+                <td>{{ row.temp_sp }} °C</td>
+                <td>{{ row.o2_sp }} l/min</td>
+                <td>{{ row.media_sp }} ml/min</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align:right; font-size:10px; font-family:Arial;">
+        {{ printed_by }}
+    </div>
+    <div class="page-break"></div>
+    <!--
+    {% if recipe_start %}
+    <h3>Recipe setup</h3>
+    <h4>Charge</h4>
+    <table>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Recipe name</td>
+            <td>{{ recipe_start[0].recipe_name }}</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</td>
+            <td>{{ recipe_start[0].pH }} pH</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</td>
+            <td>{{ recipe_start[0].TS0001 }} °C</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA</td>
+            <td>{{ recipe_start[0].OvrA }} l/min</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</td>
+            <td>{{ recipe_start[0].pO2 }} %sat</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</td>
+            <td>{{ recipe_start[0].STIR }} rpm</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR</td>
+            <td>{{ recipe_start[0].AIR }} l/min</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</td>
+            <td>{{ recipe_start[0].O2 }} l/min</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM</td>
+            <td>{{ recipe_start[0].FOAM }} ml/min</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</td>
+            <td>{{ recipe_start[0].MEDIA }} ml/min</td>
+        </tr>
+        <tr>
+            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID</td>
+            <td>{{ recipe_start[0].ACID }} ml/min</td>
+        </tr>
+        <tr>
 
+        </tr>
+    </table>
+    <div style="text-align:right; font-size:10px; font-family:Arial;">
+        {{ printed_by }}
+    </div>
+    <div class="page-break"></div>
+    {% endif %}
+    -->
+    <h3>Phase history</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase name</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">WI01</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in phases_history %}
+            <tr>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.phase_name }}</td>
+                <td>{{ row.pH_PV }} pH</td>
+                <td>{{ row.pO2_PV }} %sat</td>
+                <td>{{ row.STIR_PV }} rpm</td>
+                <td>{{ row.Temp_PV }} °C</td>
+                <td>{{ row.AIR_PV }} l/min</td>
+                <td>{{ row.O2_PV }} l/min</td>
+                <td>{{ row.CO2_PV }} l/min</td>
+                <td>{{ row.AFOAM_PV }} ml/min</td>
+                <td>{{ row.MEDIA_PV }} ml/min</td>
+                <td>{{ row.ACID_PV }} ml/min</td>
+                <td>{{ row.BASE_PV }} ml/min</td>
+                <td>{{ row.Depression_PV }} ml/min</td>
+                <td>{{ row.Induction_PV }} ml/min</td>
+                <td>{{ row.Addition_PV }} ml/min</td>
+                <td>{{ row.OvrA_PV }} l/min</td>
+                <td>{{ row.WI01_PV }} ml/min</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="text-align:right; font-size:10px; font-family:Arial;">
+        {{ printed_by }}
+    </div>
+    <div class="page-break"></div>
     {% for chart in charts %}
     <div class="chart">
         <img src="{{ chart }}" style="width: 100%; max-height: 340px; margin-bottom: 10px;">
@@ -53,18 +262,22 @@
     <div class="page-break"></div>
     <h3>Warning and errors</h3>
     <table>
-        <tr>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
-        </tr>
-        {% for row in warnings %}
-        <tr>
-            <td>{{ row.date }}</td>
-            <td>{{ row.user }}</td>
-            <td>{{ row.message }}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in warnings %}
+            <tr>
+                <td>{{ row.date }}</td>
+                <td>{{ row.user }}</td>
+                <td>{{ row.message }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     <div style="text-align:right; font-size:10px; font-family:Arial;">
         {{ printed_by }}
@@ -72,44 +285,51 @@
     <div class="page-break"></div>
     <h3>Audit trail</h3>
     <table>
-        <tr>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
-        </tr>
-        {% for row in events %}
-        <tr>
-            <td>{{ row.date }}</td>
-            <td>{{ row.user }}</td>
-            <td>{{ row.message }}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in events %}
+            <tr>
+                <td>{{ row.date }}</td>
+                <td>{{ row.user }}</td>
+                <td>{{ row.message }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     <div style="text-align:right; font-size:10px; font-family:Arial;">
         {{ printed_by }}
     </div>
     <div class="page-break"></div>
-
     <h3>Batch Report Approval</h3>
     <table>
-        <tr>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;"></th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Signature</th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Date</th>
-            <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Remark</th>
-        </tr>
-        <tr>
-            <td style="padding: 10px;">Reviewed by</td>
-            <td style="padding: 50px;"></td>
-            <td style="padding: 50px;"></td>
-            <td style="padding: 50px;"></td>
-        </tr>
-        <tr>
-            <td style="padding: 10px;">Approved by</td>
-            <td style="padding: 50px;"></td>
-            <td style="padding: 50px;"></td>
-            <td style="padding: 50px;"></td>
-        </tr>
+        <thead>
+            <tr>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;"></th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Signature</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Date</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Remark</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px;">Reviewed by</td>
+                <td style="padding: 50px;"></td>
+                <td style="padding: 50px;"></td>
+                <td style="padding: 50px;"></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;">Approved by</td>
+                <td style="padding: 50px;"></td>
+                <td style="padding: 50px;"></td>
+                <td style="padding: 50px;"></td>
+            </tr>
+        </tbody>
     </table>
     <div style="text-align:right; font-size:10px; font-family:Arial;">
         {{ printed_by }}

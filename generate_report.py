@@ -64,7 +64,7 @@ def image_file_to_base64(path_to_image):
     return f"data:{mime_type};base64,{base64_str}"
 
 
-def generate_multiline_chart(data_dict, chart):
+def generate_multiline_chart(data_dict, chart, mode):
     fig, ax1 = plt.subplots(figsize=(18, 5))
 
     # Colores y unidades por gráfico
@@ -76,12 +76,21 @@ def generate_multiline_chart(data_dict, chart):
             'STIR': ('blue', '[rpm]', ':')
         }
     elif chart == 2:
-        colors = {
-            'OvrA': ('red', '[l/min]', '-'),
-            'AIR': ('green', '[l/min]', '--'),
-            'O2_PV': ('orange', '[l/m]', '-.'),
-            'WI01': ('blue', '[kg]', ':')
-        }
+        if mode == 'Cell Culture Mode':
+            colors = {
+                'OvrA': ('red', '[l/min]', '-'),
+                'AIR': ('green', '[l/min]', '--'),
+                'O2': ('orange', '[l/m]', '-.'),
+                'WI01': ('blue', '[kg]', ':'),
+                'CO2': ('purple', '[l/m]', ':')
+            }
+        elif mode == 'Microbial Mode':
+            colors = {
+                'OvrA': ('red', '[l/min]', '-'),
+                'AIR': ('green', '[l/min]', '--'),
+                'O2': ('orange', '[l/m]', '-.'),
+                'WI01': ('blue', '[kg]', ':'),
+            }
     elif chart == 3:
         colors = {
             'ACID': ('red', '[ml]', '-'),
@@ -280,8 +289,9 @@ if __name__ == "__main__":
     chart2_data = {
         'OvrA': [],
         'AIR': [],
-        'O2_PV': [],
-        'WI01': []
+        'O2': [],
+        'WI01': [],
+        'CO2': []
     }
     chart3_data = {
         'ACID': [],
@@ -304,13 +314,16 @@ if __name__ == "__main__":
         chart1_data['STIR'].append(
             (process_data['Timestamp'], process_data['STIR_PV']))
         chart2_data['OvrA'].append(
-            (process_data['Timestamp'], process_data['STIR_PV']))
+            (process_data['Timestamp'], process_data['AIROverlay_PV']))
         chart2_data['AIR'].append(
             (process_data['Timestamp'], process_data['AIR_PV']))
-        chart2_data['O2_PV'].append(
+        chart2_data['O2'].append(
             (process_data['Timestamp'], process_data['O2_PV']))
         chart2_data['WI01'].append(
             (process_data['Timestamp'], process_data['WI01_PV']))
+        if batch_type == 'Cell Culture Mode':
+            chart2_data['CO2'].append(
+                (process_data['Timestamp'], process_data['CO2_PV']))
         chart3_data['ACID'].append(
             (process_data['Timestamp'], process_data['ACID_PV']))
         chart3_data['BASE'].append(
@@ -326,10 +339,10 @@ if __name__ == "__main__":
         chart4_data['Induction'].append(
             (process_data['Timestamp'], process_data['Pump12_PV']))
 
-    chart_base64 = generate_multiline_chart(chart1_data, 1)
-    chart2_base64 = generate_multiline_chart(chart2_data, 2)
-    chart3_base64 = generate_multiline_chart(chart3_data, 3)
-    chart4_base64 = generate_multiline_chart(chart4_data, 4)
+    chart_base64 = generate_multiline_chart(chart1_data, 1, batch_type)
+    chart2_base64 = generate_multiline_chart(chart2_data, 2, batch_type)
+    chart3_base64 = generate_multiline_chart(chart3_data, 3, batch_type)
+    chart4_base64 = generate_multiline_chart(chart4_data, 4, batch_type)
 
     start_user = False
     if start_date:
@@ -380,7 +393,7 @@ if __name__ == "__main__":
     warnings = []
     for warning_data in warning_datas:
         warnings.append({
-            'date': warning_data['Al_Start_Time'],
+            'date': warning_data['Al_Start_Time'].strftime('%d/%m/%Y %H:%M:%S'),
             'user': warning_data['Al_User'],
             'message': warning_data['Al_Message']
         })
@@ -397,7 +410,7 @@ if __name__ == "__main__":
     last_user = 'Unknown'
     for event_data in event_datas:
         events.append({
-            'date': event_data['Ev_Time'],
+            'date': event_data['Ev_Time'].strftime('%d/%m/%Y %H:%M:%S'),
             'user': event_data['Ev_User'] if event_data['Ev_User'] != 'Guest' else last_user,
             'message': event_data['Ev_Message']
         })
@@ -408,8 +421,166 @@ if __name__ == "__main__":
             if event_date['Ev_User'] != 'Guest':
                 end_user = event_date['Ev_User']
                 break
-    # TODO: Add recipe phase dict. With recipe name and phase name and all values in charts (SET POINTS)
-    recipe_phase = {}
+
+    # Initial recipe data
+    recipe_start_data = []
+    recipe_start_datas = get_data_from_mysql(
+        host,
+        user,
+        password,
+        database,
+        query="SELECT * FROM tecnic.process_history WHERE Process_name='%s' and Recipe_phase='0';" % batch_id)
+    if recipe_start_datas:
+        recipe_start_data = [{
+            'recipe_name': recipe_start_datas[0]['Recipe_name'],
+            'phase_name': recipe_start_datas[0]['Recipe_phase'],
+            'pO2': recipe_start_datas[0]['pO2_SP'],
+            'pH': recipe_start_datas[0]['ph_SP'],
+            'TS0001': recipe_start_datas[0]['Temp_SP'],
+            'STIR': recipe_start_datas[0]['STIRR_SP'],
+            'OvrA': recipe_start_datas[0]['AIROVerlay_SP'],
+            'AIR': recipe_start_datas[0]['AIR_SP'],
+            'O2_PV': recipe_start_datas[0]['O2_PV'] if recipe_start_datas[0]['O2_PV'] != 0 else 0,
+            'WI01': recipe_start_datas[0]['WI01_PV'] if recipe_start_datas[0]['WI01_PV'] != 0 else 0,
+            'ACID': recipe_start_datas[0]['ACID_PV'] if recipe_start_datas[0]['ACID_PV'] != 0 else 0,
+            'BASE': recipe_start_datas[0]['BASE_PV'] if recipe_start_datas[0]['BASE_PV'] != 0 else 0,
+            'AFOAM': recipe_start_datas[0]['AFOAM_PV'] if recipe_start_datas[0]['AFOAM_PV'] != 0 else 0,
+            'MEDIA': recipe_start_datas[0]['MEDIA_PV'] if recipe_start_datas[0]['MEDIA_PV'] != 0 else 0,
+        }]
+
+    recipe_phase_datas = []
+    recipe_datas = get_data_from_mysql(
+        host,
+        user,
+        password,
+        database,
+        query="SELECT * FROM tecnic.recipe_phase WHERE Process_name='%s';" % batch_id)
+    recipe_dict = {
+
+    }
+    for recipe_data in recipe_datas:
+        timestamp = ''
+        media_pv = 0
+        acid_pv = 0
+        base_pv = 0
+        afoam_pv = 0
+        ph_sp = 0
+        pO2_sp = 0
+        temp_sp = 0
+        stir_sp = 0
+        ovrA_sp = 0
+        air_sp = 0
+        o2_sp = 0
+        co2_sp = 0
+        depression = 0
+        induction = 0
+        addition = 0
+        phase_number = recipe_data['Phase_Number']
+        if phase_number != 0:
+            time_stamp_data = get_data_from_mysql(
+                host,
+                user,
+                password,
+                database,
+                query="SELECT * FROM tecnic.process_history WHERE Process_name='%s' and Recipe_phase='%s' LIMIT 1;" % (batch_id, phase_number))
+            if time_stamp_data:
+                timestamp = time_stamp_data[0]['Timestamp']
+                media_pv = time_stamp_data[0]['MEDIA_PV']
+                acid_pv = time_stamp_data[0]['ACID_PV']
+                base_pv = time_stamp_data[0]['BASE_PV']
+                afoam_pv = time_stamp_data[0]['AFOAM_PV']
+                ph_sp = time_stamp_data[0]['ph_SP']
+                pO2_sp = time_stamp_data[0]['pO2_SP']
+                temp_sp = time_stamp_data[0]['Temp_SP']
+                stir_sp = time_stamp_data[0]['STIRR_SP']
+                ovrA_sp = time_stamp_data[0]['AIROVerlay_SP']
+                air_sp = time_stamp_data[0]['AIR_SP']
+                o2_sp = time_stamp_data[0]['O2_SP']
+                co2_sp = time_stamp_data[0]['CO2_SP']
+                depression = time_stamp_data[0]['Pump10_PV']
+                induction = time_stamp_data[0]['Pump11_PV']
+                addition = time_stamp_data[0]['Pump12_PV']
+        if timestamp:
+            recipe_dict[recipe_data['Phase_Number']
+                        ] = recipe_data['Phase_Name']
+            recipe_phase_datas.append({
+                'timestamp': timestamp.strftime('%d/%m/%Y %H:%M:%S'),
+                'Phase_name': recipe_data['Phase_Name'],
+                'Phase_number': recipe_data['Phase_Number'],
+                'pH_mode': ph_sp,
+                'pO2_mode': pO2_sp,
+                'STIR_mode': stir_sp,
+                'temp_mode': temp_sp,
+                'AIR_mode': air_sp,
+                'O2_mode': o2_sp,
+                'CO2_mode': co2_sp,
+                'FOAM_mode': recipe_data['FOAM_Mode'],
+                'MEDIA_mode': media_pv,
+                'ACID_mode': acid_pv,
+                'BASE_mode': base_pv,
+                'AFOAM_mode': afoam_pv,
+                'Depression_mode': depression,
+                'Induction_mode': induction,
+                'Addition_mode': addition,
+            })
+    recipe_transition_datas = get_data_from_mysql(
+        host,
+        user,
+        password,
+        database,
+        query="SELECT * FROM tecnic.recipe_transition WHERE Process_name='%s';" % batch_id)
+    recipe_transition_data = []
+    for recipe_transition in recipe_transition_datas:
+        mode = recipe_transition['Mode']
+        mode_str = ''
+        if mode == 0:
+            mode_str = 'Automatic'
+        elif mode == 1:
+            mode_str = 'Manual'
+        elif mode == 3:
+            mode_str = 'Time'
+        recipe_transition_data.append({
+            'phase_number': recipe_transition['Phase_Number'],
+            'mode': mode_str,
+            'ph_sp': recipe_transition['pH_SP'],
+            'pO2_sp': recipe_transition['pO2_SP'],
+            'temp_sp': recipe_transition['TEMP_SP'],
+            'stir_sp': recipe_transition['STIR_SP'],
+            'o2_sp': recipe_transition['O2_PV'],
+            'media_sp': recipe_transition['Media_Volume'],
+        })
+    phases_history_datas = get_data_from_mysql(
+        host,
+        user,
+        password,
+        database,
+        query="SELECT * FROM tecnic.process_history WHERE Process_name='%s';" % (batch_id))
+    phases_history_data = []
+    for phase_history in phases_history_datas:
+        recipe_name = ''
+        if phase_history['Recipe_phase'] != 0:
+            recipe_name = recipe_dict[phase_history['Recipe_phase']]
+        phases_history_data.append({
+            'timestamp': phase_history['Timestamp'].strftime('%d/%m/%Y %H:%M:%S'),
+            'phase_name': recipe_name,
+            'pH_PV': phase_history['pH_PV'],
+            'pO2_PV': phase_history['pO2_PV'],
+            'Temp_PV': phase_history['Temp_PV'],
+            'STIR_PV': phase_history['STIR_PV'],
+            'OvrA_PV': phase_history['AIROverlay_PV'],
+            'AIR_PV': phase_history['AIR_PV'],
+            'O2_PV': phase_history['O2_PV'],
+            'CO2_PV': phase_history['CO2_PV'],
+            'WI01_PV': phase_history['WI01_PV'],
+            'MEDIA_PV': phase_history['MEDIA_PV'],
+            'ACID_PV': phase_history['ACID_PV'],
+            'BASE_PV': phase_history['BASE_PV'],
+            'AFOAM_PV': phase_history['AFOAM_PV'],
+            'Depression_PV': phase_history['Pump10_PV'],
+            'Induction_PV': phase_history['Pump11_PV'],
+            'Addition_PV': phase_history['Pump12_PV'],
+
+        })
     data_dict = {
         'bioreactor_name': product_name,
         'batch_type': batch_type,
@@ -418,11 +589,14 @@ if __name__ == "__main__":
         'tecnic_logo': image_file_to_base64("src/img/tecnic.png"),
         'recipe': recipe,
         'start_user': start_user,
-        'start_date': start_date,
+        'start_date': start_date.strftime('%d/%m/%Y %H:%M:%S'),
         'end_user': end_user,
-        'end_date': end_date,
+        'end_date': end_date.strftime('%d/%m/%Y %H:%M:%S'),
         'duration': duration,
-        'recipe_phase': recipe_phase,
+        'recipe_start': recipe_start_data,
+        'recipe_phase': recipe_phase_datas,
+        'recipe_transition': recipe_transition_data,
+        'phases_history': phases_history_data,
         'warnings': warnings,
         'events': events,
         'charts': [chart_base64, chart2_base64, chart3_base64, chart4_base64],
