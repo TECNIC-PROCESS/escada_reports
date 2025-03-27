@@ -8,12 +8,12 @@ To install neccessary packages, execute installer.bat
 To generate a report, call the script with the following parameters:
 
 ```
-python generate_report.py <batch_id> <output_path> <print_user> <product_name>
+python generate_report.py <batch_id> <output_path> <print_user> <product_name> <values_to_print>
 ```
 
 Example:
 
 ```
-python generate_report.py 123456.csv C:/Documents/report.pdf "Héctor Garrido" "Single Use Bioreactor 1000L"
+python generate_report.py 123456.csv C:/Documents/report.pdf "Héctor Garrido" "Single Use Bioreactor 1000L" pH STIR O2 CO2
 ```
 

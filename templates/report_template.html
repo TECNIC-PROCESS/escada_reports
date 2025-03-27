@@ -17,16 +17,18 @@
         .page-break {
             page-break-before: always;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1cm;
         }
+
         table span {
             font-size: 10px;
             font-weight: normal;
         }
+
         thead {
             display: table-header-group !important;
         }
@@ -51,196 +53,26 @@
 </head>
 
 <body>
-    <h3>Recipe phase set points</h3>
+    <h3>Datos del proceso</h3>
     <table>
         <thead>
             <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Name</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2<br/><span>%</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR<br/><span>rpm</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp<br/><span>°C</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR<br/><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2<br/><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2<br/><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA<br/><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM<br/><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA<br/><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID<br/><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE<br/><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression<br/><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction<br/><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition<br/><span>ml/min</span></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in recipe_phase %}
-            <tr>
-                <td>{{ row.Phase_number }}</td>
-                <td>{{ row.Phase_name }}</td>
-                <td>{{ row.timestamp }}</td>
-                <td>{{ row.pH_mode }}</td>
-                <td>{{ row.pO2_mode }}</td>
-                <td>{{ row.STIR_mode }}</td>
-                <td>{{ row.temp_mode }}</td>
-                <td>{{ row.AIR_mode }}</td>
-                <td>{{ row.O2_mode }}</td>
-                <td>{{ row.CO2_mode }}</td>
-                <td>{{ row.OvrA_SP }}</td>
-                <td>{{ row.FOAM_mode }}</td>
-                <td>{{ row.MEDIA_mode }}</td>
-                <td>{{ row.ACID_mode }}</td>
-                <td>{{ row.BASE_mode }}</td>
-                <td>{{ row.Depression_mode }}</td>
-                <td>{{ row.Induction_mode }}</td>
-                <td>{{ row.Addition_mode }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div style="text-align:right; font-size:10px; font-family:Arial;">
-        {{ printed_by }}
-    </div>
-    <div class="page-break"></div>
-    <h3>Recipe phase transition</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Mode</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2<br/><span>%</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR<br/><span>rpm</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp<br/><span>°C</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2<br/><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA<br/><span>ml/min</span></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in recipe_transition %}
-            <tr>
-                <td>{{ row.phase_number }}</td>
-                <td>{{ row.mode }}</td>
-                <td>{{ row.ph_sp }}</td>
-                <td>{{ row.pO2_sp }}</td>
-                <td>{{ row.stir_sp }}</td>
-                <td>{{ row.temp_sp }}</td>
-                <td>{{ row.o2_sp }}</td>
-                <td>{{ row.media_sp }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div style="text-align:right; font-size:10px; font-family:Arial;">
-        {{ printed_by }}
-    </div>
-    <div class="page-break"></div>
-    <!--
-    {% if recipe_start %}
-    <h3>Recipe setup</h3>
-    <h4>Charge</h4>
-    <table>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Recipe name</td>
-            <td>{{ recipe_start[0].recipe_name }}</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</td>
-            <td>{{ recipe_start[0].pH }} pH</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp</td>
-            <td>{{ recipe_start[0].TS0001 }} °C</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA</td>
-            <td>{{ recipe_start[0].OvrA }} l/min</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2</td>
-            <td>{{ recipe_start[0].pO2 }} %sat</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR</td>
-            <td>{{ recipe_start[0].STIR }} rpm</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR</td>
-            <td>{{ recipe_start[0].AIR }} l/min</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2</td>
-            <td>{{ recipe_start[0].O2 }} l/min</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM</td>
-            <td>{{ recipe_start[0].FOAM }} ml/min</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA</td>
-            <td>{{ recipe_start[0].MEDIA }} ml/min</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID</td>
-            <td>{{ recipe_start[0].ACID }} ml/min</td>
-        </tr>
-        <tr>
-
-        </tr>
-    </table>
-    <div style="text-align:right; font-size:10px; font-family:Arial;">
-        {{ printed_by }}
-    </div>
-    <div class="page-break"></div>
-    {% endif %}
-    -->
-    <h3>Batch data</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Phase name</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pH</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">pO2<br /><span>%</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">STIR<br /><span>rpm</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Temp<br /><span>°C</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">AIR<br /><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">O2<br /><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">CO2<br /><span>l/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">OvrA<br /><span></span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">FOAM<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">MEDIA<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">ACID<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">BASE<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Depression<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Induction<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Addition<br /><span>ml/min</span></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">WI01<br /><span>kg</span></th>
+                {% for value in values_to_print_with_timestamp %}
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">{{ value }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
             {% for row in phases_history %}
             <tr>
-                <td>{{ row.timestamp }}</td>
-                <td>{{ row.phase_name }}</td>
-                <td>{{ row.pH_PV }}</td>
-                <td>{{ row.pO2_PV }}</td>
-                <td>{{ row.STIR_PV }}</td>
-                <td>{{ row.Temp_PV }}</td>
-                <td>{{ row.AIR_PV }}</td>
-                <td>{{ row.O2_PV }}</td>
-                <td>{{ row.CO2_PV }}</td>
-                <td>{{ row.OvrA_PV }}</td>
-                <td>{{ row.AFOAM_PV }}</td>
-                <td>{{ row.MEDIA_PV }}</td>
-                <td>{{ row.ACID_PV }}</td>
-                <td>{{ row.BASE_PV }}</td>
-                <td>{{ row.Depression_PV }}</td>
-                <td>{{ row.Induction_PV }}</td>
-                <td>{{ row.Addition_PV }}</td>
-                <td>{{ row.WI01_PV }}</td>
+                {% for value in values_to_print_pv_with_timestamp %}
+                    {% set val = row[value] %}
+                    {% if val is number %}
+                        <td>{{ val | round(2) }}</td>
+                    {% else %}
+                        <td>{{ val.strftime('%d/%m/%Y %H:%M:%S')}}</td>
+                    {% endif %}
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
@@ -265,13 +97,13 @@
         {{ printed_by }}
     </div>
     <div class="page-break"></div>
-    <h3>Warning and errors</h3>
+    <h3>Advertencias y errores</h3>
     <table>
         <thead>
             <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Fecha y hora</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Usuario</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -288,13 +120,13 @@
         {{ printed_by }}
     </div>
     <div class="page-break"></div>
-    <h3>Audit trail</h3>
+    <h3>Auditoría</h3>
     <table>
         <thead>
             <tr>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Date & time</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">User</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Actions</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Fecha y hora</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Usuario</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -311,25 +143,26 @@
         {{ printed_by }}
     </div>
     <div class="page-break"></div>
-    <h3>Batch Report Approval</h3>
+    <h3>Aprobación del informe</h3>
     <table>
         <thead>
             <tr>
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;"></th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Signature</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Date</th>
-                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Remark</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Firma</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Fecha</th>
+                <th style="text-align:center; background-color:#e0e0e0; font-weight:bold; padding: 40px;">Comentario
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td style="padding: 10px;">Reviewed by</td>
+                <td style="padding: 10px;">Revisado por</td>
                 <td style="padding: 50px;"></td>
                 <td style="padding: 50px;"></td>
                 <td style="padding: 50px;"></td>
             </tr>
             <tr>
-                <td style="padding: 10px;">Approved by</td>
+                <td style="padding: 10px;">Aprobado por</td>
                 <td style="padding: 50px;"></td>
                 <td style="padding: 50px;"></td>
                 <td style="padding: 50px;"></td>

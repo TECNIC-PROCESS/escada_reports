@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <style>
         body { font-family: Arial; font-size: 12px; margin: 0; padding: 0; }
         table { width: 100%; border-collapse: collapse; border: 1px solid black; }
@@ -12,30 +13,26 @@
     <table>
         <tr>
             <td colspan="6" style="text-align:center; background-color:#e0e0e0; font-weight:bold;">
-                Batch Report - {{ bioreactor_name }}: {{ batch_type }}
+                Informe - {{ bioreactor_name }}
             </td>
         </tr>
         <tr>
-            <td rowspan="4" style="text-align:center;">
+            <td rowspan="3" style="text-align:center;">
                 <img src="{{ customer_logo }}" style="width:120px;">
             </td>
-            <td style="padding: 10px;">Batch started by:</td><td>{{ start_user }}</td>
-            <td style="padding: 10px;">Start date & time:</td><td>{{ start_date }}</td>
-            <td rowspan="4" style="text-align:center;">
+            <td style="padding: 10px;">Iniciado por:</td><td>{{ start_user }}</td>
+            <td style="padding: 10px;">Fecha y hora de inicio:</td><td>{{ start_date }}</td>
+            <td rowspan="3" style="text-align:center;">
                 <img src="{{ tecnic_logo }}" style="width:120px;">
             </td>
         </tr>
         <tr>
-            <td style="padding: 10px;">Batch ended by:</td><td>{{ end_user }}</td>
-            <td style="padding: 10px;">End date & time:</td><td>{{ end_date }}</td>
+            <td style="padding: 10px;">Finalizado por:</td><td>{{ end_user }}</td>
+            <td style="padding: 10px;">Fecha y hora de finalización:</td><td>{{ end_date }}</td>
         </tr>
         <tr>
-            <td style="padding: 10px;">Batch ID:</td><td>{{ batch_id }}</td>
-            <td style="padding: 10px;">Duration:</td><td>{{ duration }}</td>
-        </tr>
-        <tr>
-            <td style="padding: 10px;">Recipe:</td><td>{{ recipe }}</td>
-            <td style="padding: 10px;">Serial Number:</td><td>{{ serial_number }}</td>
+            <td style="padding: 10px;">ID informe:</td><td>{{ batch_id }}</td>
+            <td style="padding: 10px;">Duración:</td><td>{{ duration }}</td>
         </tr>
     </table>
 </body>
