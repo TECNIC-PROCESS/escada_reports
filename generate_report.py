@@ -14,7 +14,7 @@ from datetime import timedelta
 from datetime import datetime
 import numpy as np
 
-# wkhtml_path = os.path.abspath("wkhtmltopdf_portable/bin/wkhtmltopdf.exe")
+wkhtml_path = os.path.abspath("wkhtmltopdf_portable/bin/wkhtmltopdf.exe")
 
 REPLACE_LABELS = {
     'TT101': 'TT0001',
@@ -274,8 +274,8 @@ def generate_pdf(data_dict, output_pdf):
     }
 
     try:
-        # config = pdfkit.configuration(wkhtmltopdf=wkhtml_path)
-        config = pdfkit.configuration()
+        config = pdfkit.configuration(wkhtmltopdf=wkhtml_path)
+
         try:
             pdfkit.from_string(html_out, output_pdf,
                                options=options, configuration=config)
@@ -318,8 +318,8 @@ if __name__ == "__main__":
     # Datos desde MySQL
     host = "localhost"
     user = "root"
-    password = "tecnic12"
-    database = "tecnic_shiva"
+    password = "tecnic"
+    database = "tecnic"
 
     batch_id = sys.argv[1]
     output_path = sys.argv[2]
