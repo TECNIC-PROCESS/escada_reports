@@ -12,8 +12,29 @@ import matplotlib.dates as mdates
 import base64
 from datetime import timedelta
 from datetime import datetime
+import numpy as np
 
 # wkhtml_path = os.path.abspath("wkhtmltopdf_portable/bin/wkhtmltopdf.exe")
+
+REPLACE_LABELS = {
+    'TT101': 'TT0001',
+    'TT102': 'TT0002',
+    'TT103': 'TT0003',
+    'TT104': 'TT0004',
+    'TT105': 'TT0005',
+    'TT106': 'TT0006',
+    'TT107': 'TT0007',
+    'TT108': 'TT0008',
+    'TT109': 'TT0009',
+    'TT110': 'TT0010',
+    'TT111': 'TT0011',
+    'TT112': 'TT0012',
+    'TT113': 'TT0013',
+    'TT114': 'TT0014',
+    'PT101': 'PT0001',
+    'PT102': 'PT0002',
+    'PT103': 'PT0003',
+}
 
 
 def get_data_from_mysql(host, user, password, database, query):
@@ -95,69 +116,108 @@ def generate_multiline_chart(data_dict, chart):
         'TT104_PV': '[ºC]',
         'TT105_PV': '[ºC]',
         'TT106_PV': '[ºC]',
-        
+        'TT107_PV': '[ºC]',
+        'TT108_PV': '[ºC]',
+        'TT109_PV': '[ºC]',
+        'TT110_PV': '[ºC]',
+        'TT111_PV': '[ºC]',
+        'TT112_PV': '[ºC]',
+        'TT113_PV': '[ºC]',
+        'TT114_PV': '[ºC]',
+        'TT115_PV': '[ºC]',
+        'TT116_PV': '[ºC]',
+        'TT117_PV': '[ºC]',
+        'TT118_PV': '[ºC]',
+        'PT101_PV': '[ºC]',
+        'PT102_PV': '[ºC]',
+        'PT103_PV': '[ºC]',
+        'PT104_PV': '[ºC]',
+        'PT105_PV': '[ºC]',
     }
-    if chart == 1:
-        colors = {
-            0: ('red', '[%sat]', '-'),
-            1: ('green', '[pH]', '--'),
-            2: ('orange', '[°C]', '-.'),
-            3: ('blue', '[rpm]', ':')
-        }
-    elif chart == 2:
-        colors = {
-            0: ('red', '[l/min]', '-'),
-            1: ('green', '[l/min]', '--'),
-            2: ('orange', '[l/m]', '-.'),
-            3: ('blue', '[kg]', ':'),
-        }
-    elif chart == 3:
-        colors = {
-            0: ('red', '[ml]', '-'),
-            1: ('green', '[ml]', '--'),
-            2: ('orange', '[ml]', '-.'),
-            3: ('blue', '[ml]', ':')
-        }
-    elif chart == 4:
-        colors = {
-            0: ('red', '[ml]', '-'),
-            1: ('green', '[ml]', '--'),
-            2: ('orange', '[ml]', '-.'),
-            3: ('purple', '[ml]', ':')
-        }
-    else:
-        colors = {}
+    colors = {
+        0: ('red', '[%sat]', '-'),
+        1: ('green', '[pH]', '--'),
+        2: ('orange', '[°C]', '-.'),
+        3: ('blue', '[rpm]', ':'),
+        4: ('purple', '[ml]', ':'),
+        5: ('yellow', '[ml]', ':'),
+        6: ('pink', '[ml]', ':'),
+        7: ('brown', '[ml]', ':'),
+        8: ('gray', '[ml]', ':'),
+        9: ('cyan', '[ml]', ':'),
+        10: ('magenta', '[ml]', ':'),
+        11: ('lime', '[ml]', ':'),
+        12: ('teal', '[ml]', ':'),
+    }
 
     axes = [ax1]
     for idx, (label, data_points) in enumerate(data_dict.items()):
         color, unit, linestyle = colors[idx]
         unit = units[label]
-        times = [dp[0] for dp in data_points]
-        values = [dp[1] for dp in data_points]
 
+        # Parsear fecha (si aún no es datetime)
+        def parse_date(val):
+            if isinstance(val, datetime):
+                return val
+            try:
+                return datetime.strptime(val, "%d/%m/%Y %H:%M:%S")
+            except ValueError:
+                return datetime.strptime(val, "%Y-%m-%d %H:%M:%S")
+
+        times = [parse_date(dp[0]) for dp in data_points]
+        values = [float(dp[1]) for dp in data_points]
+
+        # Submuestreo de puntos si son muchos
+        """
+        max_points = 1000
+        if len(times) > max_points:
+            step = len(times) // max_points
+            times = times[::step]
+            values = values[::step]
+        """
+
+        # Etiqueta limpia
+        label_to_print = label.replace('_PV', '').replace(
+            '_SP', '').replace('_Volume', '')
+        if REPLACE_LABELS.get(label_to_print):
+            label_to_print = REPLACE_LABELS[label_to_print]
+
+        # Selección del eje
         if idx == 0:
             ax = ax1
-            ax.plot(times, values, color=color,
-                    linewidth=1.0, linestyle=linestyle)
-            ax.set_ylabel(f"{label} {unit}", color=color)
-            ax.tick_params(axis='y', labelcolor=color)
         else:
             ax = ax1.twinx()
             ax.spines["left"].set_position(("axes", -0.1 * idx))
             ax.spines["left"].set_visible(True)
             ax.yaxis.set_label_position('left')
             ax.yaxis.set_ticks_position('left')
-            ax.plot(times, values, color=color,
-                    linewidth=1.0, linestyle=linestyle)
-            ax.set_ylabel(f"{label} {unit}", color=color)
-            ax.tick_params(axis='y', labelcolor=color)
+
+        # Dibujar línea
+        ax.plot(times, values, color=color, linewidth=0.6,
+                linestyle=linestyle, alpha=0.85)
+        ax.set_ylabel(f"{label_to_print} {unit}", color=color)
+        ax.tick_params(axis='y', labelcolor=color)
+
+        # Submuestreo del eje Y (percentiles representativos)
+        if len(values) >= 5:
+            ticks = np.percentile(values, [0, 25, 50, 75, 100])
+            ticks = np.round(ticks, 2)
+            ticks = sorted(set(ticks))
+        else:
+            ticks = sorted(set(values))
+        ax.set_yticks(ticks)
+
         axes.append(ax)
 
-    # Eje X formateado
-    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m %H:%M'))
-    plt.xticks(rotation=45)
-    ax1.grid(True, linestyle='--', linewidth=0.5)
 
+    # Formato eje X
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m %H:%M'))
+    ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
+    plt.xticks(rotation=45)
+
+    # Limpieza general
+    fig.patch.set_facecolor('white')
+    ax1.grid(True, linestyle='--', linewidth=0.4, alpha=0.7)
     # 🔥 Aquí movemos solo el contenido gráfico (grilla + líneas)
     box = ax1.get_position()
     ax1.set_position([box.x0, box.y0, box.width, box.height])
@@ -236,10 +296,11 @@ def generate_pdf(data_dict, output_pdf):
 
 
 def get_process_data(process_datas, value):
+    data = []
     for process_data in process_datas:
         if process_data.get(value):
-            return [process_data['Timestamp'].strftime('%d/%m/%Y %H:%M:%S'), str(process_data[value])]
-    return []
+            data.append([process_data['Timestamp'].strftime('%d/%m/%Y %H:%M:%S'), str(process_data[value])])
+    return data
 
 
 if __name__ == "__main__":
@@ -257,23 +318,47 @@ if __name__ == "__main__":
     # Datos desde MySQL
     host = "localhost"
     user = "root"
-    password = "tecnic"
-    database = "tecnic"
+    password = "tecnic12"
+    database = "tecnic_shiva"
 
     batch_id = sys.argv[1]
     output_path = sys.argv[2]
     print_user = sys.argv[3]
     product_name = sys.argv[4]
-    # TODO: ÚLTIMA PAGINA SACAR DATOS SIP_CIP 
-    values_to_print = sys.argv[5:]
+
+    values_to_print_raw = sys.argv[5:]
+    values_to_print = []
+    values_to_table = []
+    for value in values_to_print_raw:
+        if value == 'Temp':
+            values_to_print = values_to_print + \
+                ['TT101', 'TT102', 'TT103', 'TT108',
+                    'TT109', 'TT110', 'TT111', 'TT112']
+            values_to_table = values_to_table + ['TT101', 'TT102']
+        elif value == 'Presure':
+            values_to_print = values_to_print + ['PT101', 'PT102', 'PT103']
+            values_to_table = values_to_table + ['PT101', 'PT102', 'PT103']
+        else:
+            values_to_print.append(value)
+            values_to_table.append(value)
     values_to_print_with_timestamp = ['Timestamp'] + \
-        [col for col in sys.argv[5:]]
+        [col for col in values_to_print]
     values_to_print_sp_with_timestamp = ['Timestamp'] + \
-        [col + "_SP" for col in sys.argv[5:]]
+        [col + "_SP" for col in values_to_print]
     values_to_print_pv_with_timestamp = ['Timestamp'] + \
-        [col + "_PV" for col in sys.argv[5:]]
-    values_to_print_sp = [col + "_SP" for col in sys.argv[5:]]
-    values_to_print_pv = [col + "_PV" if not col in ['BASE', 'ACID', 'AFOAM', 'MEDIA'] else col + '_Volume' for col in sys.argv[5:]]
+        [col + "_PV" for col in values_to_print]
+    values_to_print_sp = [col + "_SP" for col in values_to_print]
+    values_to_print_pv = [col + "_PV" if not col in ['BASE', 'ACID',
+                                                     'AFOAM', 'MEDIA'] else col + '_Volume' for col in values_to_print]
+    values_to_print_table_pv = ['Timestamp'] + \
+        [col + "_PV" for col in values_to_table]
+    values_to_table = ['Timestamp'] + values_to_table
+    table_header = []
+    for value in values_to_table:
+        if REPLACE_LABELS.get(value):
+            table_header.append(REPLACE_LABELS[value])
+        else:
+            table_header.append(value)
     values_to_print_str = ','.join(values_to_print)
     values_to_print_sp_str = ','.join(values_to_print_sp)
     values_to_print_pv_str = ','.join(values_to_print_pv)
@@ -290,7 +375,7 @@ if __name__ == "__main__":
         user,
         password,
         database,
-        query="SELECT * FROM %s.process_history WHERE Process_name='%s';" % (database, batch_id))
+        query="SELECT Recipe_name,%s FROM %s.process_history WHERE Process_name='%s';" % (values_to_print_pv_with_timestamp_str, database, batch_id))
 
     start_date = False
     end_date = False
@@ -306,20 +391,25 @@ if __name__ == "__main__":
     chart2_data = {}
     chart3_data = {}
     chart4_data = {}
-    for i, value in enumerate(values_to_print_pv):
-        if i <= 3:
-            chart1_data[value] = get_process_data(process_datas, value)
-        elif i <= 7:
+    chart5_data = {}
+    for value in values_to_print_pv:
+        if value.startswith('PT'):
             chart2_data[value] = get_process_data(process_datas, value)
-        elif i <= 11:
+        elif value.startswith('TT') and value in ['TT101_PV', 'TT102_PV']:
             chart3_data[value] = get_process_data(process_datas, value)
-        elif i <= 15:
+        elif value.startswith('TT') and value in ['TT110_PV', 'TT111_PV', 'TT112_PV']:
             chart4_data[value] = get_process_data(process_datas, value)
+        elif not value.startswith('TT') and not value.startswith('PT'):
+            chart1_data[value] = get_process_data(process_datas, value)
+        if value in ['TT101_PV', 'TT103_PV', 'TT108_PV', 'TT109_PV']:
+            chart5_data[value] = get_process_data(process_datas, value)
+
     chart_list = []
     chart_base64 = False
     chart2_base64 = False
     chart3_base64 = False
     chart4_base64 = False
+    chart_list_sip = []
     if chart1_data:
         chart_list.append(generate_multiline_chart(chart1_data, 1))
     if chart2_data:
@@ -328,7 +418,8 @@ if __name__ == "__main__":
         chart_list.append(generate_multiline_chart(chart3_data, 3))
     if chart4_data:
         chart_list.append(generate_multiline_chart(chart4_data, 4))
-
+    if chart5_data:
+        chart_list_sip.append(generate_multiline_chart(chart5_data, 5))
     start_user = False
     if start_date:
         event_start_date = start_date - timedelta(seconds=30)
@@ -414,6 +505,21 @@ if __name__ == "__main__":
         database,
         query="SELECT %s FROM %s.process_history WHERE Process_name='%s';" % (values_to_print_pv_with_timestamp_str, database, batch_id))
 
+    # Get SIP_CIP data
+    sip_cip_data = get_data_from_mysql(
+        host,
+        user,
+        password,
+        database,
+        query="SELECT * FROM %s.sip_cip WHERE Process_name='%s';" % (database, batch_id))
+    
+    if sip_cip_data:
+        sip_cip_data = sip_cip_data[0]
+    else:
+        sip_cip_data = {}
+
+    # NEED SIP1_TT_SP_Preheating, SIP1_PT_SP_Sterilization, SIP1_TT_SP_Sterilization, SIP1_SP_TIME_STERILIZING
+    # SIP1_PT_SP_Cooling, SIP1_TT_SP_Camisa, SIP1_TT_SP_Cooling, SIP1_TT_SP_Cooling_2
     data_dict = {
         'bioreactor_name': product_name,
         'batch_id': batch_id,
@@ -434,6 +540,10 @@ if __name__ == "__main__":
         'warnings': warnings,
         'events': events,
         'charts': chart_list,
+        'charts_sip': chart_list_sip,
+        'values_to_table': table_header,
+        'values_to_print_table_pv': values_to_print_table_pv,
         'printed_by': 'Impreso por %s el %s' % (print_user, datetime.now().strftime('%d/%m/%Y %H:%M:%S')),
+        'sip_cip': sip_cip_data
     }
     generate_pdf(data_dict, output_path)

@@ -57,7 +57,7 @@
     <table>
         <thead>
             <tr>
-                {% for value in values_to_print_with_timestamp %}
+                {% for value in values_to_table %}
                 <th style="text-align:center; background-color:#e0e0e0; font-weight:bold;">{{ value }}</th>
                 {% endfor %}
             </tr>
@@ -65,13 +65,13 @@
         <tbody>
             {% for row in phases_history %}
             <tr>
-                {% for value in values_to_print_pv_with_timestamp %}
-                    {% set val = row[value] %}
-                    {% if val is number %}
-                        <td>{{ val | round(2) }}</td>
-                    {% else %}
-                        <td>{{ val.strftime('%d/%m/%Y %H:%M:%S')}}</td>
-                    {% endif %}
+                {% for value in values_to_print_table_pv %}
+                {% set val = row[value] %}
+                {% if val is number %}
+                <td>{{ val | round(2) }}</td>
+                {% else %}
+                <td>{{ val.strftime('%d/%m/%Y %H:%M:%S')}}</td>
+                {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -139,6 +139,40 @@
             {% endfor %}
         </tbody>
     </table>
+    <div style="text-align:right; font-size:10px; font-family:Arial;">
+        {{ printed_by }}
+    </div>
+    <div class="page-break"></div>
+    <h3>SIP Completado</h3>
+    <table>
+        <tbody>
+            <tr>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">TT SP Preheating</td>
+                <td>{{ sip_cip.SIP1_TT_SP_Preheating }} ºC</td>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">PT SP Sterilization</td>
+                <td>{{ sip_cip.SIP1_PT_SP_Sterilization }} ºC</td>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">TT SP Sterilization</td>
+                <td>{{ sip_cip.SIP1_TT_SP_Sterilization }} bar</td>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">SP Time Sterilizing</td>
+                <td>{{ sip_cip.SIP1_SP_TIME_STERILIZING }} min</td>
+            </tr>
+            <tr>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">PT SP Cooling</td>
+                <td>{{ sip_cip.SIP1_PT_SP_Cooling }} bar</td>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">TT SP Camisa</td>
+                <td>{{ sip_cip.SIP1_TT_SP_Camisa }} ºC</td>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">TT SP Cooling</td>
+                <td>{{ sip_cip.SIP1_TT_SP_Cooling }} ºC</td>
+                <td style="text-align:center; background-color:#e0e0e0; font-weight:bold;">TT SP Cooling 2</td>
+                <td>{{ sip_cip.SIP1_TT_SP_Cooling_2 }} ºC</td>
+            </tr>
+        </tbody>
+    </table>
+    {% for chart in charts_sip %}
+    <div class="chart">
+        <img src="{{ chart }}" style="width: 100%; max-height: 340px; margin-bottom: 10px;">
+    </div>
+    {% endfor %}
     <div style="text-align:right; font-size:10px; font-family:Arial;">
         {{ printed_by }}
     </div>
